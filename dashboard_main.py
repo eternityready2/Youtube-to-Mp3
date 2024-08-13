@@ -3,7 +3,7 @@ import pandas as pd
 from main import download_video, download_video_audio, save_downloaded_files
 import streamlit as st 
 
-st.set_page_config(layout='wide', page_title='Youtube Video Downloader', page_icon="images/logo.png")
+st.set_page_config(layout='wide', page_title='Youtube Video Downloader', page_icon="logo.png")
 
 column1, column2 = st.columns([1,15])
 
