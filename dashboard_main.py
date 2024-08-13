@@ -7,7 +7,7 @@ st.set_page_config(layout='wide', page_title='Youtube Video Downloader', page_ic
 column1, column2 = st.columns([1,15])
 
 with column1:
-    st.image('images\logo.png', width=100)
+    st.image('images\\logo.png', width=100)
 
 with column2:
     st.title("Youtube Video Downloader")
