@@ -4,13 +4,7 @@ from main import download_video, download_video_audio, save_downloaded_files
 import streamlit as st 
 
 st.set_page_config(layout='wide', page_title='Youtube Video Downloader', page_icon="images/logo.png")
-column1, column2 = st.columns([1,15])
-
-with column1:
-    st.image('images\\logo.png', width=100)
-
-with column2:
-    st.title("Youtube Video Downloader")
+st.title("Youtube Video Downloader")
 
 st.divider()
 user_input = st.text_input("Youtube URL data", key="url")
