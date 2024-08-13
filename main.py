@@ -16,6 +16,7 @@ downloaded_files = pd.DataFrame(columns=['Type', 'Title', 'Path'])
 
 
 def download_video(url):
+    file = ""
     try:
         yt = YouTube(url, on_progress_callback = on_progress)        
         ys = yt.streams.get_highest_resolution()
@@ -25,9 +26,10 @@ def download_video(url):
         save_downloaded_files()
         return f"Your video is ready to download.", file
     except Exception as e:
-        return (f"Exception: {e}")
+        return f"Exception: {e}", file
 
 def download_video_audio(url):
+    file = ""
     try:
         yt = YouTube(url, on_progress_callback = on_progress)
         ys = yt.streams.get_audio_only()
@@ -37,7 +39,7 @@ def download_video_audio(url):
         save_downloaded_files()
         return f"Your music is ready do download.", file
     except Exception as e:
-            print (f"Exception: {e}")
+        return f"Exception: {e}", file
 
 def save_downloaded_files():
      downloaded_files.to_csv('downloaded_files.csv', index=False)
