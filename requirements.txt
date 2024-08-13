@@ -1,0 +1,4 @@
+pandas==2.2.2
+pandas-datareader==0.10.0
+pandas_ta==0.3.14b0
+pytubefix==6.10.2
