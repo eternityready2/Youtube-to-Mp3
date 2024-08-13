@@ -4,7 +4,13 @@ from main import download_video, download_video_audio, save_downloaded_files
 import streamlit as st 
 
 st.set_page_config(layout='wide', page_title='Youtube Video Downloader', page_icon="images/logo.png")
-st.title("Youtube Video Downloader")
+
+column1, column2 = st.columns([1,15])
+
+with column1:
+    st.image("logo.png", width=80)
+with column2:
+    st.title("Youtube Video Downloader")
 
 st.divider()
 user_input = st.text_input("Youtube URL data", key="url")
@@ -41,23 +47,29 @@ with column2:
 
 if video_path and os.path.exists(video_path):
     with open(video_path, 'rb') as file:
-        st.download_button(
+        download_button = st.download_button(
             label="Download Video",
             data=file.read(),
             file_name=os.path.basename(video_path),
             mime="video/mp4",
             use_container_width=True
         )
+        if download_button:
+            os.remove(audio_path)
+            st.write(f"File {os.path.basename(video_path)} has been deleted.")
 
 if audio_path and os.path.exists(audio_path):
     with open(audio_path, 'rb') as file:
-        st.download_button(
+        download_button = st.download_button(
             label="Download Audio",
             data=file.read(),
             file_name=os.path.basename(audio_path),
             mime="audio/mpeg",
             use_container_width=True
         )    
+        if download_button:
+            os.remove(audio_path)
+            st.write(f"File {os.path.basename(audio_path)} has been deleted.")
 
 
 
