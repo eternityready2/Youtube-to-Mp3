@@ -26,7 +26,9 @@ def download_video(url):
         save_downloaded_files()
         return f"Your video is ready to download.", file
     except Exception as e:
-        return f"Exception: {e}", file
+        if "mregex_search" in str(e):
+            return f"This url is not recognized. Please insert a url from a Youtube video.", file
+        return f"This video is set as private by its owner. Please select another video.", file
 
 def download_video_audio(url):
     file = ""
@@ -39,7 +41,10 @@ def download_video_audio(url):
         save_downloaded_files()
         return f"Your music is ready do download.", file
     except Exception as e:
-        return f"Exception: {e}", file
+        if "mregex_search" in str(e):
+            return f"This url is not recognized. Please insert a url from a Youtube video.", file
+        return f"This video is set as private by its owner. Please select another video.", file
+    
 
 def save_downloaded_files():
      downloaded_files.to_csv('downloaded_files.csv', index=False)
