@@ -35,7 +35,7 @@ def download_video_audio(url):
     try:
         yt = YouTube(url, on_progress_callback = on_progress)
         ys = yt.streams.get_audio_only()
-        file = ys.download(output_path=download_audio_folder)
+        file = ys.download(output_path=download_audio_folder, filename=f"{yt.title}.mp3")
         file_path = os.path.join(download_audio_folder, f"{yt.title}.mp3")
         downloaded_files.loc[len(downloaded_files)]=['Audio', yt.title, file_path]
         save_downloaded_files()
