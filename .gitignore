@@ -1,5 +1,8 @@
+downloaded_files.csv
 download_audios/
 download_videos/
+downloaded_audios/
+downloaded_videos/
 
 # Poetry lock
 poetry.lock
@@ -153,4 +156,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-__pycache__/main.cpython-312.pyc
