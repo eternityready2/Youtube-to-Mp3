@@ -2,34 +2,39 @@ from main import download_video, download_video_audio, log_downloaded_files
 import streamlit as st
 
 
-def download_all_urls_and_log(user_input, *, file_extension):
+def download_all_urls_and_log(urls, *, file_extension):
     def is_mp3():
         return file_extension.casefold() == 'mp3'.casefold()
 
-    if not user_input:
+    if not urls:
+        st.toast('No URL provided, so nothing to download', icon='⚠️')
         return
     callback_func = download_video_audio if is_mp3() else download_video
     content_type = 'Audio' if is_mp3() else 'Video'
-    for url in user_input.split('\n'):
-        if url.strip() == '':
-            continue
-        message_placeholder = st.toast(f'Downloading {content_type.lower()}...')
+    for url in urls:
+        msg_placeholder = st.toast(f'Downloading {content_type.lower()}...')
         result_msg, title, file_path = callback_func(url.strip())
         if file_path is None:
-            message_placeholder.toast(result_msg, icon='❌')
+            msg_placeholder.toast(result_msg, icon='❌')
             continue
         else:
             msg_with_data = result_msg.format(title, file_path)
-            message_placeholder.toast(msg_with_data, icon='✅')
+            msg_placeholder.toast(msg_with_data, icon='✅')
             log_downloaded_files(content_type, title, file_path)
 
 
+def read_lines(s):
+    """s: any multiline string"""
+    return [url.strip() for url in s.split('\n') if url.strip() != '']
+
+
 def download_all_urls_as_video():
-    download_all_urls_and_log(user_input, file_extension='mp4')
+    download_all_urls_and_log(read_lines(user_input), file_extension='mp4')
 
 
 def download_all_urls_as_audio():
-    download_all_urls_and_log(user_input, file_extension='mp3')
+
+    download_all_urls_and_log(read_lines(user_input), file_extension='mp3')
 
 
 if __name__ == '__main__':
