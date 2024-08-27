@@ -33,7 +33,6 @@ def download_all_urls_as_video():
 
 
 def download_all_urls_as_audio():
-
     download_all_urls_and_log(read_lines(user_input), file_extension='mp3')
 
 
