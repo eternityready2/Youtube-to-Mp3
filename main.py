@@ -6,8 +6,8 @@ from pytubefix.cli import on_progress
 CSV_FILE_NAME = 'downloaded_files.csv'
 AUD_CONTENT_DIR = 'downloaded_audios'
 VID_CONTENT_DIR = 'downloaded_videos'
-RESULT_MSG_AUDIO = 'Your music “{0}” has been downloaded to {1}'
-RESULT_MSG_VIDEO = 'Your video “{0}” has been downloaded to {1}'
+RESULT_MSG_AUDIO = 'Your music “{0}” has been downloaded'
+RESULT_MSG_VIDEO = 'Your video “{0}” has been downloaded'
 ERR_MSG_BAD_URL = 'This URL is not recognized. Please insert a URL from a YouTube video.'
 ERR_MSG_PRIVATE = 'This video is set as private by its owner. Please select another video.'
 

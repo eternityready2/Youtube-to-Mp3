@@ -18,7 +18,7 @@ def download_all_urls_and_log(urls, *, file_extension):
             msg_placeholder.toast(result_msg, icon='❌')
             continue
         else:
-            msg_with_data = result_msg.format(title, file_path)
+            msg_with_data = result_msg.format(title)
             msg_placeholder.toast(msg_with_data, icon='✅')
             log_downloaded_files(content_type, title, file_path)
 
