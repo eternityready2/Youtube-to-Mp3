@@ -42,14 +42,6 @@ def read_lines(s):
     return [url.strip() for url in s.split('\n') if url.strip() != '']
 
 
-def download_all_urls_as_video():
-    download_all_urls_and_log(read_lines(user_input), file_extension='mp4')
-
-
-def download_all_urls_as_audio():
-    download_all_urls_and_log(read_lines(user_input), file_extension='mp3')
-
-
 if __name__ == '__main__':
     st.set_page_config(
         layout='wide', page_title='Youtube Video Downloader', page_icon='logo.png')
@@ -68,9 +60,13 @@ if __name__ == '__main__':
     column1, column2 = st.columns([1, 6])
 
     with column1:
-        st.button('I want download a Video', help='Download your Youtube Video',
-                  on_click=download_all_urls_as_video, use_container_width=False)
+        dl_as_vid = st.button('I want download a Video', help='Download your Youtube Video', use_container_width=False)
 
     with column2:
-        st.button('I want download only the Audio', help='Download audio from your Youtube Video',
-                  on_click=download_all_urls_as_audio, use_container_width=False)
+        dl_as_aud = st.button('I want download only the Audio', help='Download audio from your Youtube Video', use_container_width=False)
+
+    if dl_as_vid:
+        download_all_urls_and_log(read_lines(user_input), file_extension='mp4')
+
+    if dl_as_aud:
+        download_all_urls_and_log(read_lines(user_input), file_extension='mp3')
