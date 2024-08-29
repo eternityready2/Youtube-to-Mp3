@@ -3,6 +3,7 @@ from main import download_video, download_video_audio, log_downloaded_files
 import streamlit as st
 
 
+@st.fragment
 def insert_btn_to_save_media_locally(content_type, mime_type, title, file_path):
     with open(file_path, 'rb') as file_bytes:
         st.download_button(
