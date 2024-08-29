@@ -44,26 +44,25 @@ def read_lines(s):
 
 if __name__ == '__main__':
     st.set_page_config(
-        layout='wide', page_title='Youtube Video Downloader', page_icon='logo.png')
+        layout='centered', page_title='Youtube Video Downloader', page_icon='logo.png')
 
-    column1, column2 = st.columns([1, 15])
+    logo_col, heading_col = st.columns([1, 10])
 
-    with column1:
+    with logo_col:
         st.image('logo.png', width=80)
-    with column2:
+    with heading_col:
         st.title('Youtube Video Downloader')
 
     st.divider()
     user_input = st.text_area(
         'Paste one or more YouTube URLs, one per line:', key='url')
     st.divider()
-    column1, column2 = st.columns([1, 6])
+    dl_btn_cols = st.columns(2)
+    with dl_btn_cols[0]:
+        dl_as_vid = st.button('Download URLs as Video', help='Download the YouTube URLs as video', use_container_width=True)
 
-    with column1:
-        dl_as_vid = st.button('I want download a Video', help='Download your Youtube Video', use_container_width=False)
-
-    with column2:
-        dl_as_aud = st.button('I want download only the Audio', help='Download audio from your Youtube Video', use_container_width=False)
+    with dl_btn_cols[1]:
+        dl_as_aud = st.button('Download URLs as Audio only', help='Download the YouTube URLs as audio', use_container_width=True)
 
     if dl_as_vid:
         download_all_urls_and_log(read_lines(user_input), file_extension='mp4')
