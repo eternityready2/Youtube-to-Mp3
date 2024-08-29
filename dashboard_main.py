@@ -1,5 +1,17 @@
+import os
 from main import download_video, download_video_audio, log_downloaded_files
 import streamlit as st
+
+
+def insert_btn_to_save_media_locally(content_type, mime_type, title, file_path):
+    with open(file_path, 'rb') as file_bytes:
+        st.download_button(
+            label=f'Download “{title}” as {content_type}',
+            data=file_bytes.read(),
+            file_name=os.path.basename(file_path),
+            mime=f'{mime_type}',
+            use_container_width=True
+        )
 
 
 def download_all_urls_and_log(urls, *, file_extension):
@@ -20,6 +32,8 @@ def download_all_urls_and_log(urls, *, file_extension):
         msg_with_data = result_msg.format(title)
         msg_placeholder.toast(msg_with_data, icon='✅')
         log_downloaded_files(content_type, title, file_path)
+        mime_type = 'audio/mp3' if is_mp3() else 'video/mp4'
+        insert_btn_to_save_media_locally(content_type.lower(), mime_type, title, file_path)
 
 
 def read_lines(s):
@@ -59,32 +73,3 @@ if __name__ == '__main__':
     with column2:
         st.button('I want download only the Audio', help='Download audio from your Youtube Video',
                   on_click=download_all_urls_as_audio, use_container_width=False)
-
-# video_path = None
-# audio_path = None
-
-# if video_path and os.path.exists(video_path):
-#     with open(video_path, 'rb') as file:
-#         download_button = st.download_button(
-#             label='Download Video',
-#             data=file.read(),
-#             file_name=os.path.basename(video_path),
-#             mime='video/mp4',
-#             use_container_width=True
-#         )
-#         if download_button:
-#             os.remove(audio_path)
-#             st.write(f'File {os.path.basename(video_path)} has been deleted.')
-
-# if audio_path and os.path.exists(audio_path):
-#     with open(audio_path, 'rb') as file:
-#         download_button = st.download_button(
-#             label='Download Audio',
-#             data=file.read(),
-#             file_name=os.path.basename(audio_path),
-#             mime='audio/mpeg',
-#             use_container_width=True
-#         )
-#         if download_button:
-#             os.remove(audio_path)
-#             st.write(f'File {os.path.basename(audio_path)} has been deleted.')
