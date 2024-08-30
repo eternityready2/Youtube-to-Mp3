@@ -1,5 +1,5 @@
 import os
-from main import download_video, download_video_audio, log_downloaded_files
+from util import download_video, download_video_audio, log_downloaded_files
 import streamlit as st
 
 
