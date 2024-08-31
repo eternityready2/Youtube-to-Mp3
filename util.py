@@ -6,10 +6,10 @@ from pytubefix.cli import on_progress
 CSV_FILE_NAME = 'downloaded_files.csv'
 AUD_CONTENT_DIR = 'downloaded_audios'
 VID_CONTENT_DIR = 'downloaded_videos'
-RESULT_MSG_AUDIO = 'Your music “{0}” has been downloaded'
-RESULT_MSG_VIDEO = 'Your video “{0}” has been downloaded'
-ERR_MSG_BAD_URL = 'This URL is not recognized. Please insert a URL from a YouTube video.'
-ERR_MSG_PRIVATE = 'This video is set as private by its owner. Please select another video.'
+RESULT_MSG_AUDIO = '“{0}” audio is ready to be saved'
+RESULT_MSG_VIDEO = '“{0}” video is ready to be saved'
+ERR_MSG_BAD_URL = 'This URL ({0}) does not look like a valid YouTube URL'
+ERR_MSG_PRIVATE = 'Cannot reach URL ({0}). This video may be set as private by its owner.'
 
 
 def download_content(url: str, file_extension: str) -> (str, str, str):
@@ -17,6 +17,7 @@ def download_content(url: str, file_extension: str) -> (str, str, str):
         return file_extension.casefold() == 'mp3'.casefold()
 
     destination_dir = AUD_CONTENT_DIR if is_mp3() else VID_CONTENT_DIR
+    destination_dir = os.path.join('/tmp', destination_dir)
     result_msg = RESULT_MSG_AUDIO if is_mp3() else RESULT_MSG_VIDEO
     if not os.path.exists(destination_dir):
         os.makedirs(destination_dir)
@@ -57,3 +58,8 @@ def log_downloaded_files(content_type, title, path):
                                  ignore_index=True,
                                  sort=False)
     downloaded_files.to_csv(CSV_FILE_NAME, index=False)
+
+
+def read_lines(s):
+    """s: any multiline string"""
+    return [line.strip() for line in s.split('\n') if line.strip() != '']
