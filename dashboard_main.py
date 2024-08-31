@@ -35,6 +35,7 @@ def insert_btn_to_save_media_on_host(content_type, title, tmp_file_path,
             use_container_width=True,
         )
         if save_on_host_btn:
+            os.makedirs(os.path.dirname(perm_file_path), exist_ok=True)
             shutil.move(tmp_file_path, perm_file_path)
             log_downloaded_files(content_type, title, perm_file_path)
             st.rerun(scope='fragment')
