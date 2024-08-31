@@ -13,7 +13,7 @@ This guide provides a step-by-step process to deploy a Streamlit application on 
 
 ● Linux server with root access.
 
-Step 1: Update the Server
+**Step 1: Update the Server**
 
 1. Update and Upgrade Packages
    
