@@ -40,20 +40,20 @@ pip3 install streamlit
     
 cd /path/to/your/app
 
-5. Start the Streamlit app by running:
+Start the Streamlit app by running:
     
 streamlit run your_app.py
 
 **Step 5: Set Up a Systemd Service**
 
-6. To keep your Streamlit app running in the background and ensure it restarts
+5. To keep your Streamlit app running in the background and ensure it restarts
 automatically, create a systemd service.
 
-7. Create a Service File. Open a new service file with the following command:
+Create a Service File. Open a new service file with the following command:
     
 sudo nano /etc/systemd/system/streamlit-app.service
 
-8. Add Service Configuration. Copy and paste the following content into the service file.
+Add Service Configuration. Copy and paste the following content into the service file.
     
 [Unit]
 Description=Streamlit App
@@ -68,15 +68,15 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 
-9. Start and Enable the Service
+Start and Enable the Service
     
 sudo systemctl start streamlit-app
 
-10. Enable the service to start on boot:
+Enable the service to start on boot:
     
 sudo systemctl enable streamlit-app
 
-**Step 7: Access Your Streamlit App**
+**Step 6: Access Your Streamlit App**
 
 Once everything is set up, you can access your Streamlit app by navigating to your
 server's IP address or domain name in a web browser.
