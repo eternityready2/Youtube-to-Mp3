@@ -5,7 +5,7 @@ This script requires a VPS / Dedicated Server with root and command line access.
 
 >>> The following is instructions on how to setup the app and the server:
 
-Introduction:
+//// Introduction:
 
 This guide provides a step-by-step process to deploy a Streamlit application on a Linux server.
 
@@ -88,7 +88,7 @@ Once everything is set up, you can access your Streamlit app by navigating to yo
 server's IP address or domain name in a web browser.
 
 
-**** Commands for the Stream LIT app ***
+>>> Commands for the Stream LIT app >>>>
 
 1. Restart the app
    
