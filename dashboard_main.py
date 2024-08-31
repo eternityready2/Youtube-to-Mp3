@@ -8,37 +8,35 @@ import streamlit as st
 
 
 @st.fragment()
-def insert_btn_to_save_media_locally(content_type, mime_type, title,
-                                     tmp_file_path):
+def insert_saving_options_ui(cnt_typ, title, tmp_file_path, uniq_key):
     if os.path.exists(tmp_file_path):
-        with open(tmp_file_path, 'rb') as file_bytes:
-            save_locally_btn = st.download_button(
-                label=f'Save “{title}” {content_type} on your device',
-                data=file_bytes.read(),
-                file_name=os.path.basename(tmp_file_path),
-                mime=f'{mime_type}',
-                use_container_width=True
-            )
-            if save_locally_btn:
-                if os.path.exists(tmp_file_path):
+        mime_type = f'{cnt_typ.lower()}/{tmp_file_path.lower()[-3:]}'
+        saving_options_cols = st.columns([10, 2])
+        with saving_options_cols[0]:
+            with open(tmp_file_path, 'rb') as file_bytes:
+                save_locally_btn = st.download_button(
+                    label=f'Save “{title}” {cnt_typ.lower()} on your device',
+                    data=file_bytes.read(),
+                    file_name=os.path.basename(tmp_file_path),
+                    mime=mime_type,
+                    use_container_width=True
+                )
+                if save_locally_btn:
                     os.remove(tmp_file_path)
+                    st.rerun(scope='fragment')
+
+        with saving_options_cols[1]:
+            perm_file_path = re.sub(r'^/tmp', os.getcwd(), tmp_file_path)
+            save_on_host_btn = st.button(
+                key=uniq_key,
+                label='or on host',
+                use_container_width=True,
+            )
+            if save_on_host_btn:
+                os.makedirs(os.path.dirname(perm_file_path), exist_ok=True)
+                shutil.move(tmp_file_path, perm_file_path)
+                log_downloaded_files(cnt_typ, title, perm_file_path)
                 st.rerun(scope='fragment')
-
-
-@st.fragment()
-def insert_btn_to_save_media_on_host(content_type, title, tmp_file_path,
-                                     perm_file_path, uniq_key):
-    if os.path.exists(tmp_file_path):
-        save_on_host_btn = st.button(
-            key=uniq_key,
-            label='or on host',
-            use_container_width=True,
-        )
-        if save_on_host_btn:
-            os.makedirs(os.path.dirname(perm_file_path), exist_ok=True)
-            shutil.move(tmp_file_path, perm_file_path)
-            log_downloaded_files(content_type, title, perm_file_path)
-            st.rerun(scope='fragment')
 
 
 def download_all_urls_and_log(urls, *, file_extension):
@@ -55,17 +53,43 @@ def download_all_urls_and_log(urls, *, file_extension):
             continue
         msg_with_data = result_msg.format(title)
         msg_placeholder.toast(msg_with_data, icon='✅')
-        mime_type = 'audio/mp3' if is_mp3() else 'video/mp4'
-        saving_options_cols = st.columns([10, 2])
-        with saving_options_cols[0]:
-            insert_btn_to_save_media_locally(content_type.lower(), mime_type,
-                                             title, tmp_file_path)
-        with saving_options_cols[1]:
-            uniq_key = f'{time_ns()}'
-            perm_file_path = re.sub(r'^/tmp', os.getcwd(), tmp_file_path)
-            insert_btn_to_save_media_on_host(content_type.lower(), title,
-                                             tmp_file_path, perm_file_path,
-                                             uniq_key)
+        uniq_key = f'{time_ns()}'
+        insert_saving_options_ui(content_type, title, tmp_file_path, uniq_key)
+
+
+@st.fragment()
+def insert_text_area_and_dl_buttons():
+    user_input = st.text_area('Paste one or more YouTube URLs, one per line:',
+                              key='urls',
+                              disabled=st.session_state[HAS_DL_STARTED])
+    urls = read_lines(user_input)
+    st.divider()
+
+    dl_btn_cols = st.columns(2)
+    with dl_btn_cols[0]:
+        dl_as_vid = st.button('Download URLs as Video', key='dl_as_vid',
+                              disabled=st.session_state[HAS_DL_STARTED],
+                              use_container_width=True)
+    with dl_btn_cols[1]:
+        dl_as_aud = st.button('Download URLs as Audio only', key='dl_as_aud',
+                              disabled=st.session_state[HAS_DL_STARTED],
+                              use_container_width=True)
+
+    if dl_as_vid:
+        if not st.session_state[HAS_DL_STARTED]:
+            if not urls:
+                st.toast('No URL provided, so nothing to download', icon='⚠️')
+            else:
+                st.session_state[HAS_DL_STARTED] = True
+                download_all_urls_and_log(urls, file_extension='mp4')
+
+    if dl_as_aud:
+        if not st.session_state[HAS_DL_STARTED]:
+            if not urls:
+                st.toast('No URL provided, so nothing to download', icon='⚠️')
+            else:
+                st.session_state[HAS_DL_STARTED] = True
+                download_all_urls_and_log(urls, file_extension='mp3')
 
 
 if __name__ == '__main__':
@@ -79,39 +103,11 @@ if __name__ == '__main__':
     with heading_col:
         st.title('Youtube Video Downloader')
 
-    KEY_DL_MODE_CHOSEN = 'is_dl_mode_chosen'
-    if KEY_DL_MODE_CHOSEN not in st.session_state:
-        st.session_state[KEY_DL_MODE_CHOSEN] = False
+    HAS_DL_STARTED = 'has_dl_started'
+    if HAS_DL_STARTED not in st.session_state:
+        st.session_state[HAS_DL_STARTED] = False
 
     st.divider()
-    user_input = st.text_area('Paste one or more YouTube URLs, one per line:',
-                              key='urls',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN])
-    urls = read_lines(user_input)
-    st.divider()
 
-    dl_btn_cols = st.columns(2)
-    with dl_btn_cols[0]:
-        dl_as_vid = st.button('Download URLs as Video', key='dl_as_vid',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN],
-                              use_container_width=True)
-    with dl_btn_cols[1]:
-        dl_as_aud = st.button('Download URLs as Audio only', key='dl_as_aud',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN],
-                              use_container_width=True)
+    insert_text_area_and_dl_buttons()
 
-    if dl_as_vid:
-        if not st.session_state[KEY_DL_MODE_CHOSEN]:
-            if not urls:
-                st.toast('No URL provided, so nothing to download', icon='⚠️')
-            else:
-                st.session_state[KEY_DL_MODE_CHOSEN] = True
-                download_all_urls_and_log(urls, file_extension='mp4')
-
-    if dl_as_aud:
-        if not st.session_state[KEY_DL_MODE_CHOSEN]:
-            if not urls:
-                st.toast('No URL provided, so nothing to download', icon='⚠️')
-            else:
-                st.session_state[KEY_DL_MODE_CHOSEN] = True
-                download_all_urls_and_log(urls, file_extension='mp3')
