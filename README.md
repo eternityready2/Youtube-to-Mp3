@@ -22,67 +22,61 @@ up-to-date:
 
 sudo apt update && sudo apt upgrade
 
-Step 2: Install Python and pip
+**Step 2: Install Python and pip**
 
-3. Install Python 3 and pip by running:
+2. Install Python 3 and pip by running:
  
 sudo apt install python3 python3-pip
 
-Step 3: Install Streamlit
+**Step 3: Install Streamlit**
 
-6. With Python installed, install Streamlit by running:
+3. With Python installed, install Streamlit by running:
 
 pip3 install streamlit
 
-Step 4: Deploy Your Streamlit App
+**Step 4: Deploy Your Streamlit App**
 
-9. Use the cd command to navigate to the directory where your Streamlit app is located:
+4. Use the cd command to navigate to the directory where your Streamlit app is located:
     
 cd /path/to/your/app
 
-11. Start the Streamlit app by running:
+5. Start the Streamlit app by running:
     
 streamlit run your_app.py
 
-Step 5: Set Up a Systemd Service
+**Step 5: Set Up a Systemd Service**
 
-13. To keep your Streamlit app running in the background and ensure it restarts
+6. To keep your Streamlit app running in the background and ensure it restarts
 automatically, create a systemd service.
 
-15. Create a Service File. Open a new service file with the following command:
+7. Create a Service File. Open a new service file with the following command:
     
 sudo nano /etc/systemd/system/streamlit-app.service
 
-17. Add Service Configuration. Copy and paste the following content into the service file.
+8. Add Service Configuration. Copy and paste the following content into the service file.
     
 [Unit]
-
 Description=Streamlit App
 After=network.target
 
 [Service]
-
 User=your_username
-
 WorkingDirectory=/path/to/your/app
-
 ExecStart=/usr/bin/python3 -m streamlit run your_app.py
-
 Restart=always
 
 [Install]
-
 WantedBy=multi-user.target
 
-19. Start and Enable the Service
+9. Start and Enable the Service
     
 sudo systemctl start streamlit-app
 
-21. Enable the service to start on boot:
+10. Enable the service to start on boot:
     
 sudo systemctl enable streamlit-app
 
-Step 7: Access Your Streamlit App
+**Step 7: Access Your Streamlit App**
 
 Once everything is set up, you can access your Streamlit app by navigating to your
 server's IP address or domain name in a web browser.
