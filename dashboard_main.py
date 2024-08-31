@@ -57,6 +57,41 @@ def download_all_urls_and_log(urls, *, file_extension):
         insert_saving_options_ui(content_type, title, tmp_file_path, uniq_key)
 
 
+@st.fragment()
+def insert_text_area_and_dl_buttons():
+    user_input = st.text_area('Paste one or more YouTube URLs, one per line:',
+                              key='urls',
+                              disabled=st.session_state[HAS_DL_STARTED])
+    urls = read_lines(user_input)
+    st.divider()
+
+    dl_btn_cols = st.columns(2)
+    with dl_btn_cols[0]:
+        dl_as_vid = st.button('Download URLs as Video', key='dl_as_vid',
+                              disabled=st.session_state[HAS_DL_STARTED],
+                              use_container_width=True)
+    with dl_btn_cols[1]:
+        dl_as_aud = st.button('Download URLs as Audio only', key='dl_as_aud',
+                              disabled=st.session_state[HAS_DL_STARTED],
+                              use_container_width=True)
+
+    if dl_as_vid:
+        if not st.session_state[HAS_DL_STARTED]:
+            if not urls:
+                st.toast('No URL provided, so nothing to download', icon='⚠️')
+            else:
+                st.session_state[HAS_DL_STARTED] = True
+                download_all_urls_and_log(urls, file_extension='mp4')
+
+    if dl_as_aud:
+        if not st.session_state[HAS_DL_STARTED]:
+            if not urls:
+                st.toast('No URL provided, so nothing to download', icon='⚠️')
+            else:
+                st.session_state[HAS_DL_STARTED] = True
+                download_all_urls_and_log(urls, file_extension='mp3')
+
+
 if __name__ == '__main__':
     st.set_page_config(
         layout='centered', page_title='Youtube Video Downloader', page_icon='logo.png')
@@ -68,39 +103,11 @@ if __name__ == '__main__':
     with heading_col:
         st.title('Youtube Video Downloader')
 
-    KEY_DL_MODE_CHOSEN = 'is_dl_mode_chosen'
-    if KEY_DL_MODE_CHOSEN not in st.session_state:
-        st.session_state[KEY_DL_MODE_CHOSEN] = False
+    HAS_DL_STARTED = 'has_dl_started'
+    if HAS_DL_STARTED not in st.session_state:
+        st.session_state[HAS_DL_STARTED] = False
 
     st.divider()
-    user_input = st.text_area('Paste one or more YouTube URLs, one per line:',
-                              key='urls',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN])
-    urls = read_lines(user_input)
-    st.divider()
 
-    dl_btn_cols = st.columns(2)
-    with dl_btn_cols[0]:
-        dl_as_vid = st.button('Download URLs as Video', key='dl_as_vid',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN],
-                              use_container_width=True)
-    with dl_btn_cols[1]:
-        dl_as_aud = st.button('Download URLs as Audio only', key='dl_as_aud',
-                              disabled=st.session_state[KEY_DL_MODE_CHOSEN],
-                              use_container_width=True)
+    insert_text_area_and_dl_buttons()
 
-    if dl_as_vid:
-        if not st.session_state[KEY_DL_MODE_CHOSEN]:
-            if not urls:
-                st.toast('No URL provided, so nothing to download', icon='⚠️')
-            else:
-                st.session_state[KEY_DL_MODE_CHOSEN] = True
-                download_all_urls_and_log(urls, file_extension='mp4')
-
-    if dl_as_aud:
-        if not st.session_state[KEY_DL_MODE_CHOSEN]:
-            if not urls:
-                st.toast('No URL provided, so nothing to download', icon='⚠️')
-            else:
-                st.session_state[KEY_DL_MODE_CHOSEN] = True
-                download_all_urls_and_log(urls, file_extension='mp3')
