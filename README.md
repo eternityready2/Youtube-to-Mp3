@@ -5,7 +5,7 @@ This script requires a VPS / Dedicated Server with root and command line access.
 
 >>> The following is instructions on how to setup the app and the server:
 
-\\ Introduction:
+$ Introduction:
 
 This guide provides a step-by-step process to deploy a Streamlit application on a Linux server.
 
