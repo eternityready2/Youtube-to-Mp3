@@ -8,37 +8,35 @@ import streamlit as st
 
 
 @st.fragment()
-def insert_btn_to_save_media_locally(content_type, mime_type, title,
-                                     tmp_file_path):
+def insert_saving_options_ui(cnt_typ, title, tmp_file_path, uniq_key):
     if os.path.exists(tmp_file_path):
-        with open(tmp_file_path, 'rb') as file_bytes:
-            save_locally_btn = st.download_button(
-                label=f'Save “{title}” {content_type} on your device',
-                data=file_bytes.read(),
-                file_name=os.path.basename(tmp_file_path),
-                mime=f'{mime_type}',
-                use_container_width=True
-            )
-            if save_locally_btn:
-                if os.path.exists(tmp_file_path):
+        mime_type = f'{cnt_typ.lower()}/{tmp_file_path.lower()[-3:]}'
+        saving_options_cols = st.columns([10, 2])
+        with saving_options_cols[0]:
+            with open(tmp_file_path, 'rb') as file_bytes:
+                save_locally_btn = st.download_button(
+                    label=f'Save “{title}” {cnt_typ.lower()} on your device',
+                    data=file_bytes.read(),
+                    file_name=os.path.basename(tmp_file_path),
+                    mime=mime_type,
+                    use_container_width=True
+                )
+                if save_locally_btn:
                     os.remove(tmp_file_path)
+                    st.rerun(scope='fragment')
+
+        with saving_options_cols[1]:
+            perm_file_path = re.sub(r'^/tmp', os.getcwd(), tmp_file_path)
+            save_on_host_btn = st.button(
+                key=uniq_key,
+                label='or on host',
+                use_container_width=True,
+            )
+            if save_on_host_btn:
+                os.makedirs(os.path.dirname(perm_file_path), exist_ok=True)
+                shutil.move(tmp_file_path, perm_file_path)
+                log_downloaded_files(cnt_typ, title, perm_file_path)
                 st.rerun(scope='fragment')
-
-
-@st.fragment()
-def insert_btn_to_save_media_on_host(content_type, title, tmp_file_path,
-                                     perm_file_path, uniq_key):
-    if os.path.exists(tmp_file_path):
-        save_on_host_btn = st.button(
-            key=uniq_key,
-            label='or on host',
-            use_container_width=True,
-        )
-        if save_on_host_btn:
-            os.makedirs(os.path.dirname(perm_file_path), exist_ok=True)
-            shutil.move(tmp_file_path, perm_file_path)
-            log_downloaded_files(content_type, title, perm_file_path)
-            st.rerun(scope='fragment')
 
 
 def download_all_urls_and_log(urls, *, file_extension):
@@ -55,17 +53,8 @@ def download_all_urls_and_log(urls, *, file_extension):
             continue
         msg_with_data = result_msg.format(title)
         msg_placeholder.toast(msg_with_data, icon='✅')
-        mime_type = 'audio/mp3' if is_mp3() else 'video/mp4'
-        saving_options_cols = st.columns([10, 2])
-        with saving_options_cols[0]:
-            insert_btn_to_save_media_locally(content_type.lower(), mime_type,
-                                             title, tmp_file_path)
-        with saving_options_cols[1]:
-            uniq_key = f'{time_ns()}'
-            perm_file_path = re.sub(r'^/tmp', os.getcwd(), tmp_file_path)
-            insert_btn_to_save_media_on_host(content_type.lower(), title,
-                                             tmp_file_path, perm_file_path,
-                                             uniq_key)
+        uniq_key = f'{time_ns()}'
+        insert_saving_options_ui(content_type, title, tmp_file_path, uniq_key)
 
 
 if __name__ == '__main__':
